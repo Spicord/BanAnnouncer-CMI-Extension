@@ -1,6 +1,6 @@
 {
-    "name": "CMIExt",
-    "key": "cmiext",
-    "class": "me.tini.announcer.cmiext.CMIEvents",
+    "name": "CMI",
+    "key": "cmi",
+    "class": "me.tini.announcer.cmiext.CMIExtension",
     "requiredClass": "com.Zrips.CMI.CMI"
 }

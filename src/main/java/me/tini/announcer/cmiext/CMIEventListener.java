@@ -19,18 +19,17 @@ import com.Zrips.CMI.events.CMIPlayerUnBanEvent;
 import com.Zrips.CMI.events.CMIPlayerUnjailEvent;
 import com.Zrips.CMI.events.CMIPlayerWarnEvent;
 
-import me.tini.announcer.BanAnnouncerPlugin;
-import me.tini.announcer.PunishmentAction;
-import me.tini.announcer.PunishmentAction.Type;
-import me.tini.announcer.bukkit.BanAnnouncerBukkit;
-import me.tini.announcer.bukkit.BukkitPunishmentListener;
+import me.tini.announcer.PunishmentInfo;
+import me.tini.announcer.PunishmentInfo.Type;
+import me.tini.announcer.plugin.bukkit.BanAnnouncerBukkit;
+import me.tini.announcer.plugin.bukkit.BukkitPunishmentListener;
 
-public class CMIEvents extends BukkitPunishmentListener {
+public class CMIEventListener extends BukkitPunishmentListener {
 
     private CMI cmi;
 
-    public CMIEvents(BanAnnouncerPlugin plugin) {
-        super((BanAnnouncerBukkit) plugin);
+    public CMIEventListener(BanAnnouncerBukkit plugin) {
+        super(plugin);
 
         cmi = CMI.getInstance();
     }
@@ -44,7 +43,7 @@ public class CMIEvents extends BukkitPunishmentListener {
         final Long until = event.getUntil();
         final boolean isPermanent = until == null;
 
-        PunishmentAction p = new PunishmentAction();
+        PunishmentInfo p = new PunishmentInfo();
         if (isPermanent) {
             p.setType(Type.BAN);
             p.setPermanent(true);
@@ -73,7 +72,7 @@ public class CMIEvents extends BukkitPunishmentListener {
         final Player unbanned = event.getPlayer();
         final CommandSender staff = event.getBannedBy();
 
-        PunishmentAction p = new PunishmentAction();
+        PunishmentInfo p = new PunishmentInfo();
         p.setType(Type.UNBAN);
 
         if (staff instanceof Player) {
@@ -96,7 +95,7 @@ public class CMIEvents extends BukkitPunishmentListener {
         final Long until = event.getUntil();
         final boolean isPermanent = until == null;
 
-        PunishmentAction p = new PunishmentAction();
+        PunishmentInfo p = new PunishmentInfo();
         if (isPermanent) {
             p.setType(Type.BANIP);
             p.setPermanent(true);
@@ -124,7 +123,7 @@ public class CMIEvents extends BukkitPunishmentListener {
         final String unbanned = event.getIp();
         final CommandSender staff = event.getBannedBy();
 
-        PunishmentAction p = new PunishmentAction();
+        PunishmentInfo p = new PunishmentInfo();
         p.setType(Type.UNBANIP);
 
         if (staff instanceof Player) {
@@ -145,7 +144,7 @@ public class CMIEvents extends BukkitPunishmentListener {
         final CommandSender staff = event.getBannedBy();
         final String reason = event.getReason();
 
-        PunishmentAction p = new PunishmentAction();
+        PunishmentInfo p = new PunishmentInfo();
         p.setType(Type.KICK);
 
         if (staff instanceof Player) {
@@ -166,7 +165,7 @@ public class CMIEvents extends BukkitPunishmentListener {
     public void onAfkKick(CMIAfkKickEvent event) {
         final Player kicked = event.getPlayer();
 
-        PunishmentAction p = new PunishmentAction();
+        PunishmentInfo p = new PunishmentInfo();
         p.setType(Type.KICK);
 
         p.setPlayerId(kicked.getUniqueId().toString());
@@ -185,7 +184,7 @@ public class CMIEvents extends BukkitPunishmentListener {
         final String staff = warning.getGivenBy();
         final String reason = warning.getReason();
 
-        PunishmentAction p = new PunishmentAction();
+        PunishmentInfo p = new PunishmentInfo();
         p.setType(Type.WARN);
 
         p.setOperator(staff);
@@ -203,7 +202,7 @@ public class CMIEvents extends BukkitPunishmentListener {
         final String jail = event.getCell().getJail().getName();
         final String reason = user.getJailedReason();
 
-        PunishmentAction p = new PunishmentAction();
+        PunishmentInfo p = new PunishmentInfo();
         p.setType(Type.JAIL);
 
         p.setPlayerId(user.getUniqueId().toString());
@@ -220,9 +219,15 @@ public class CMIEvents extends BukkitPunishmentListener {
     @EventHandler
     public void onPlayerUnjail(CMIPlayerUnjailEvent event) {
         final CMIUser user = event.getUser();
-        final String jail = event.getCell().getJail().getName();
+        final String jail;
 
-        PunishmentAction p = new PunishmentAction();
+        if (event.getCell() != null) {
+            jail = event.getCell().getJail().getName();
+        } else {
+            jail = "unknown";
+        }
+
+        PunishmentInfo p = new PunishmentInfo();
         p.setType(Type.UNJAIL);
 
         p.setPlayerId(user.getUniqueId().toString());
